@@ -6,6 +6,7 @@
  * ----------------------------------------------------------------------------
  */
 #include <iostream>
+#include "stdlib.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -13,7 +14,7 @@
 typedef struct treeNode{
     int num;//记录子女的个数
     char name[20];//姓名
-    char sex[2];//性别
+    char sex;//性别 男 = m/M ,女 = f/F
     char isMarried;//婚否, y/Y  n/N  .
 
     struct treeNode * nextNode[20];//记录这个人的儿女,[0] 号为配偶
@@ -117,8 +118,8 @@ treePoint createTree(){
         tp=(treePoint)malloc(sizeof(treeNode));//申请一棵树的内存
 
         //strcpy(tp->name,ch);//名字赋值
-        printf("\n请输入性别, '男' '女' \n");
-        scanf("%s",tp->sex);
+        printf("\n请输入性别, 男 = m/M  |  女 = f/F  \n");
+        scanf("%c",tp->sex);
         printf("请输入Ta是否已婚: 已婚输入 y/Y, 未婚输入 n/N : \n");
         scanf("%c",&(tp->isMarried));
 
@@ -132,8 +133,8 @@ treePoint createTree(){
             (tp->nextNode[0]->num)=(tp->num);//自动赋值 孩子个数
             (tp->nextNode[0]->isMarried)='Y';//自动赋值 已婚
             /***自动赋值 男 女  *****/
-            if((tp->sex) == '男'){strcpy(tp->nextNode[0]->sex,'女');}
-            else{strcpy(tp->nextNode[0]->sex,'男');}
+            if((tp->sex) == 'M' || (tp->sex) == 'm'){tp->nextNode[0]->sex = 'F';}
+            else{tp->nextNode[0]->sex = 'M';}
             //取消 /*将其双亲节点指向配偶:*/
             //    (tp->nextNode[0]->parent) = tp;
 
