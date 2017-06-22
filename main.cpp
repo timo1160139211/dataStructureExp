@@ -1,4 +1,4 @@
-/*
+/**
  * ----------------------------------------------------------------------------
  * Copyright (c) 2017, GaoYisheng  <gaoyisheng.site>
  * All rights reserved.
@@ -10,104 +10,115 @@
 #include <stdio.h>
 #include <string.h>
 
-//å®šä¹‰ æ ‘çš„ç»“æ„ä½“.
+//¶¨Òå Ê÷µÄ½á¹¹Ìå.
 typedef struct treeNode{
-    int num;//è®°å½•å­å¥³çš„ä¸ªæ•°
-    char name[20];//å§“å
-    char sex;//æ€§åˆ« ç”· = m/M ,å¥³ = f/F
-    char isMarried;//å©šå¦, y/Y  n/N  .
+    int num;//¼ÇÂ¼×ÓÅ®µÄ¸öÊı
+    char name[20];//ĞÕÃû
+    char sex;//ĞÔ±ğ ÄĞ = m/M ,Å® = f/F
+    char isMarried;//»é·ñ, y/Y  n/N  .
 
-    struct treeNode * nextNode[20];//è®°å½•è¿™ä¸ªäººçš„å„¿å¥³,[0] å·ä¸ºé…å¶
-    //struct treeNode * parent;//è®°å½•è¿™ä¸ªèŠ‚ç‚¹çš„çˆ¶èŠ‚ç‚¹====
-    //ååˆ ,ä¸ªäººè®¤ä¸ºä¸éœ€è¦è¿™ä¸ªæŒ‡é’ˆ.åªéœ€è¦ä¿®æ”¹åˆ¤æ–­è¯­å¥å³å¯   å¤šä¸€å±‚æŒ‡é’ˆ æ¥æŸ¥æ‰¾
+    struct treeNode * nextNode[20];//¼ÇÂ¼Õâ¸öÈËµÄ¶ùÅ®,[0] ºÅÎªÅäÅ¼
+    //struct treeNode * parent;//¼ÇÂ¼Õâ¸ö½ÚµãµÄ¸¸½Úµã====
+    //ºóÉ¾,¸öÈËÈÏÎª²»ĞèÒªÕâ¸öÖ¸Õë.Ö»ĞèÒªĞŞ¸ÄÅĞ¶ÏÓï¾ä¼´¿É   ¶àÒ»²ãÖ¸Õë À´²éÕÒ
 }treeNode,*treePoint;
 
 
-/*ä¸€ç³»åˆ—æ“ä½œ*/
-void welcomeMorpheus();//æ¬¢è¿ç•Œé¢
-void showMenu();//æ˜¾ç¤ºèœå•
-void backMenu();//æ‰“å°è¿”å›
- 
-treePoint createTree();//åˆ›å»ºæ ‘,
-void visit(treePoint tp);//éå†æ ‘ 
-treePoint search(treePoint tp,char s[]);//æŸ¥æ‰¾ 
-void add(treePoint tp,int type,char *s);//æ·»åŠ     ä¾ç±»å‹  1 å«å¨¶ï¼ˆï¼‰ï¼Œ2 ç”Ÿè‚²ï¼ˆï¼‰ 
+/*Ò»ÏµÁĞ²Ù×÷*/
+void welcomeMorpheus();//»¶Ó­½çÃæ
+void showMenu();//ÏÔÊ¾²Ëµ¥
+void backMenu();//´òÓ¡·µ»Ø
+void printPerson(treePoint tp,int type);//´òÓ¡Õâ¸öÈËµÄĞÅÏ¢
 
+treePoint createTree();//´´½¨Ê÷,
+void visit(treePoint tp);//±éÀúÊ÷
+treePoint search(treePoint tp,char s[]);//²éÕÒ
+void add(treePoint tp);//Ìí¼Ó    ÒÀÀàĞÍ  1 ¼ŞÈ¢£¨£©£¬2 ÉúÓı£¨£©
+void edit(treePoint mt);//ĞŞ¸ÄĞÕÃû 
+
+
+//È«¾Ö±äÁ¿
+int type=-2;//ÓÃÀ´Çø·Ö²éÕÒµÄÊÇ²»ÊÇ  ¸ù½áµã-1  ¡¢ ¼ŞÈ¢µÄÏµÍâ ÅäÅ¼  0  ¡¢µÚ¼¸¸öº¢×Ó ¾ÍÊÇ¼¸
 
 int main() {
     char c;
-    char s[20];//æŸ¥æ‰¾ä¸² åå­—â€˜ 
-    treePoint st;//æŸ¥æ‰¾åˆ°çš„æ ‘ 
-    treePoint mainTree;//å®šä¹‰ä¸€ä¸ªæŒ‡å‘æ ‘çš„æŒ‡é’ˆ
-    
-	/* æ¬¢è¿ç•Œé¢ */
+
+    char s[20];//²éÕÒ´® Ãû×Ö¡®
+    treePoint st;//²éÕÒµ½µÄÊ÷
+    treePoint mainTree=NULL;//¶¨ÒåÒ»¸öÖ¸ÏòÊ÷µÄÖ¸Õë
+
+	/* »¶Ó­½çÃæ */
     welcomeMorpheus();
     while(1)
     {
-        showMenu();//æ˜¾ç¤ºé€‰æ‹©èœå•
-		    c = getchar();//è¿›è¡Œé€‰æ‹©è·³è½¬
+        showMenu();//ÏÔÊ¾Ñ¡Ôñ²Ëµ¥
+		    c = getchar();//½øĞĞÑ¡ÔñÌø×ª
 		    switch(c)
 		    {
+		    	  case 'a':
 			      case 'A':
-				        printf("----------æ­£åœ¨åˆ›å»ºå®¶è°±æ ‘ing...----------\n");
-				        
-                		mainTree=createTree();//åˆ›å»º æ ‘
-						printf("----------åˆ›å»ºå®¶è°±æ ‘å®Œæˆ! ^_^ ----------\n");
+				        printf("\n----------ÕıÔÚ´´½¨¼ÒÆ×Ê÷ing...----------\n\n");
+
+                		mainTree=createTree();//´´½¨ Ê÷
+						printf("\n\n----------´´½¨¼ÒÆ×Ê÷Íê³É! ^_^ ----------\n\n\n");
 						backMenu();
 			            break;
-			            
+				  case 'b':
 			      case 'B':
-				        printf("----------æ­£åœ¨ç¿»é˜…å®¶è°±ing...  ----------\n");
-				        if(mainTree==NULL){printf("è¯·å…ˆå»ºç«‹å®¶è°±");break;}//è·³å‡ºswich è¿›å…¥é€‰æ‹©ç•Œé¢ 
-				        visit(mainTree);//éå† 
-				        printf("----------  åˆä¸Šå®¶è°±   ^_^    ----------\n");
+				        printf("\n----------ÕıÔÚ·­ÔÄ¼ÒÆ×ing...  ----------\n\n");
+				        if(mainTree==NULL){printf("! ¼ÒÆ×Îª¿Õ,ÇëÏÈ½¨Á¢¼ÒÆ×\n\n");break;}//Ìø³öswich ½øÈëÑ¡Ôñ½çÃæ
+				        visit(mainTree);//±éÀú
+				        printf("\n----------  ºÏÉÏ¼ÒÆ×   ^_^    ----------\n\n\n");
 				        backMenu();
 			            break;
 
+				  case 'c':
 			      case 'C':
-				        printf("---------- è¯·è¾“å…¥æŸ¥æ‰¾å§“åï¼š   ----------\n");
+			      		//ÅĞ¿Õ
+				        if(mainTree==NULL){printf("! ¼ÒÆ×Îª¿Õ,ÇëÏÈ½¨Á¢¼ÒÆ×\n\n");break;}//Ìø³öswich ½øÈëÑ¡Ôñ½çÃæ
+
+				        printf("---------- ÇëÊäÈë²éÕÒĞÕÃû£º   ----------\n\n");
 				        //gets(s);
 				        scanf("%s",s);
-				        if(s==NULL){printf("æŸ¥æ‰¾å§“åä¸èƒ½ä¸ºç©ºï¼");break;	}
-				        
-				        printf("----------æ­£åœ¨ç¿»é˜…å®¶è°±ing...  ----------\n");
-				        st=search(mainTree,s); 
-				        
+				        if(s==NULL){printf("²éÕÒĞÕÃû²»ÄÜÎª¿Õ£¡");break;	}
+
+				        printf("----------ÕıÔÚ·­ÔÄ¼ÒÆ×ing...  ----------\n\n\n");
+				        st=search(mainTree,s);
+
 				        if(st==NULL){
-				        	printf("æŸ¥è¯¢ä¸åˆ° %s çš„ä¿¡æ¯  :-(  \n",s);
+				        	printf("²éÑ¯²»µ½ %s µÄĞÅÏ¢  :-(  \n",s);
 						}else{
-							printf("æŸ¥è¯¢æˆåŠŸï¼  :-)  \n");
-							//æ‰“å°è¯¥ç”¨æˆ·ä¿¡æ¯ 	
+							printf("²éÑ¯³É¹¦£¡  :-)  \n");
+							//´òÓ¡¸ÃÓÃ»§ĞÅÏ¢
 						}
-				        
+
 				        backMenu();
 			            break;
 
-
+				  case 'd':
 			      case 'D':
-				        printf("-----é€‰æ‹©æ·»åŠ ç±»å‹  A : å«å¨¶ï¼ˆæ·»åŠ é…å¶ï¼‰ï¼ŒB : ç”Ÿè‚²ï¼ˆæ·»åŠ å­å¥³ï¼‰\n");
 				        
-				        
-				        
-				        
-				        
-				        printf("----------æ·»åŠ åˆ°å®¶è°± å®Œæˆï¼^_^ ----------\n");
+
+						add(mainTree);
+
+				        printf("----------Ìí¼Óµ½¼ÒÆ× Íê³É£¡^_^ ----------\n");
 				        backMenu();
 			              break;
 
-
+				  case 'e':
 			      case 'E':
-                		printf("é€‰æ‹©äº†E\n");
-			              break;
+			      		edit(mainTree);
+                		backMenu();
+			            break;
 
-
+				  case 'q':
 			      case 'Q':
-				        printf("é€‰æ‹©äº†é€€å‡º\n");
+				        printf("Ñ¡ÔñÁËÍË³ö\n");
 			              //break;
-                   		exit(0);//ç›´æ¥é€€å‡º
+                   		exit(0);//Ö±½ÓÍË³ö
 
 		      }//switch
 		  //if(c == 'Q') break;
+		  getchar();
 	  }
 
 
@@ -115,213 +126,388 @@ int main() {
 }
 
 
-//ç³»ç»Ÿæ¬¢è¿é¡µé¢
+//ÏµÍ³»¶Ó­Ò³Ãæ
 void welcomeMorpheus(){
     printf("\n");
     printf("#################  Loading  ######################\n");
     printf("##                                              ##\n");
-    printf("##                æ¬¢è¿ä½¿ç”¨å®¶è°±ç³»ç»Ÿ              ##\n");
+    printf("##                »¶Ó­Ê¹ÓÃ¼ÒÆ×ÏµÍ³              ##\n");
     printf("##                                              ##\n");
     printf("##                        designed by Morpheus  ##\n");
     printf("##################################################\n\n");
 
 }
 
-//æ˜¾ç¤ºé€‰æ‹©èœå•
+//ÏÔÊ¾Ñ¡Ôñ²Ëµ¥
 void showMenu(){
-	
+
     printf("\n");
-    printf("----------#########  è¯·é€‰æ‹©æ“ä½œ  #########----------\n");
-    printf("     A : è¾“å…¥å»ºç«‹å®¶è°±ä¿¡æ¯\n");
-    printf("     B : è¾“å‡ºæ‰“å°æ•´ä¸ªå®¶è°±ä¿¡æ¯\n");
-    printf("     C : åœ¨å®¶è°±ä¸­æŸ¥æ‰¾æŸäºº\n");
-    printf("     D : æ·»åŠ æ–°çš„æˆå‘˜\n");
-    printf("     E : ä¿®æ”¹æŸäººçš„ä¿¡æ¯\n");
-    printf("     Q : é€€å‡ºç³»ç»Ÿ\n");
+    printf("----------#########  ÇëÑ¡Ôñ²Ù×÷  #########----------\n");
+    printf("   Aa : ÊäÈë½¨Á¢¼ÒÆ×ĞÅÏ¢\n");
+    printf("   Bb : Êä³ö´òÓ¡Õû¸ö¼ÒÆ×ĞÅÏ¢\n");
+    printf("   Cc : ÔÚ¼ÒÆ×ÖĞ²éÕÒÄ³ÈË\n");
+    printf("   Dd : Ìí¼ÓĞÂµÄ³ÉÔ±\n");
+    printf("   Ee : ĞŞ¸ÄÄ³ÈËµÄĞÅÏ¢\n");
+    printf("   Qq : ÍË³öÏµÍ³\n");
     printf("\n\n");
 }
 
-//æ‰“å°è¿”å›ç•Œé¢ 
+//´òÓ¡·µ»Ø½çÃæ
 void backMenu(){
-	printf("\n>>>>>è¿”å›é€‰æ‹©ç•Œé¢>>>>>\n");
+	printf("\n>>>>>·µ»ØÑ¡Ôñ½çÃæ>>>>>\n\n\n");
 }
 
-//åˆ›å»ºæ ‘   å…ˆåºåˆ›å»º
-treePoint createTree(){
-        treePoint tp;//åˆ›å»ºä¸€ä¸ª æŒ‡å‘æ ‘çš„ æŒ‡é’ˆ
-        tp=(treePoint)malloc(sizeof(treeNode));//ç”³è¯·ä¸€æ£µæ ‘çš„å†…å­˜
+//´òÓ¡Õâ¸öÈËµÄĞÅÏ¢  //¸ù¾İtype £¬·Ö±ğ´òÓ¡
+void printPerson(treePoint tp){
 
-        printf("\nè¯·è¾“å…¥åå­—:\n");
+			if(type<-2&&type>20) return;
+	   		if(type==-1){
+	   	  		printf(">>ĞÕÃû£º%s £¬ĞÔ±ğ£º",tp->name);
+		 		if((tp->sex) == 'M' || (tp->sex) == 'm'){printf("ÄĞ");}
+				else{printf("Å®");}
+					printf(" £¬»é·ñ£º");
+		 		if((tp->isMarried) == 'n' || (tp->isMarried) == 'N'){printf("Î´»é\n");}
+		 		else{printf("ÒÑ»é\n");
+		 			//ÒÑ»é£º
+					//ÏÈ´òÓ¡Êä³ö  ÆŞ×Ó/ÕÉ·òµÄĞÅÏ¢£º
+		 			if((tp->sex) == 'M' || (tp->sex) == 'm'){
+						printf("\t%s ºÍÆŞ×Ó %s ÓıÓĞ %d ¸ö×ÓÅ®:\n",tp->name,tp->nextNode[0]->name,tp->num);}
+					else{
+						printf("\t%s ºÍÕÉ·ò %s ÓıÓĞ %d ¸ö×ÓÅ®:\n",tp->name,tp->nextNode[0]->name,tp->num);}
+
+					//ÏÈ´òÓ¡ËùÓĞº¢×Ó ĞÕÃû
+					for(int i=1;i<=(tp->num)&&i<20;i++){//ÒòÎªnum¸öº¢×Ó,ÓÖ¿Õ³öÒ»¸ö¸øÅäÅ¼,ËùÒÔ<=
+              			printf("\t\tµÚ %d ¸öº¢×Ó: %s \n ",i,tp->nextNode[i]->name);
+       				}//for
+
+	   			}
+	   		}//  type=-1
+
+			if(type==0){//ÅäÅ¼ 
+	   	  	    printf(">>ĞÕÃû£º%s £¬ĞÔ±ğ£º",tp->nextNode[0]->name);
+                    if((tp->nextNode[0]->sex) == 'M' || (tp->nextNode[0]->sex) == 'm'){printf("ÄĞ");}
+                    else{printf("Å®");}
+                printf(" , ÒÑ»é     (·Ç±¾Ïµ)\n");
+
+                    if((tp->nextNode[0]->sex) == 'M' || (tp->nextNode[0]->sex) == 'm'){
+                        printf("\t%s ÊÇ %s µÄÕÉ·ò.\n",tp->nextNode[0]->name,tp->name);}
+                    else{
+                        printf("\t%s ÊÇ %s µÄÆŞ×Ó.\n",tp->nextNode[0]->name,tp->name);
+                	    }
+
+
+                    if((tp->nextNode[0]->sex) == 'M' || (tp->nextNode[0]->sex) == 'm'){
+                        printf("\t%s ºÍÆŞ×Ó %s ÓıÓĞ %d ¸ö×ÓÅ®:\n",tp->nextNode[0]->name,tp->name,tp->nextNode[0]->num);}
+                    else{
+                        printf("\t%s ºÍÕÉ·ò %s ÓıÓĞ %d ¸ö×ÓÅ®:\n",tp->nextNode[0]->name,tp->name,tp->nextNode[0]->num);
+                        }
+
+                    //ÏÈ´òÓ¡ËùÓĞº¢×Ó ĞÕÃû
+                    for(int i=1;i<=(tp->num)&&i<20;i++){//ÒòÎªnum¸öº¢×Ó,ÓÖ¿Õ³öÒ»¸ö¸øÅäÅ¼,ËùÒÔ<=
+                        printf("\t\tµÚ %d ¸öº¢×Ó: %s \n ",i,tp->nextNode[i]->name);
+                    }
+
+	   	  		}
+
+
+
+	      	if(type>=1){
+	      					printf(">>ĞÕÃû£º%s £¬ĞÔ±ğ£º",tp->nextNode[type]->name);
+		 						if((tp->nextNode[type]->sex) == 'M' || (tp->nextNode[type]->sex) == 'm'){printf("ÄĞ");}
+								else{printf("Å®");}
+									printf(" £¬»é·ñ£º");
+		 						if((tp->nextNode[type]->isMarried) == 'n' || (tp->nextNode[type]->isMarried) == 'N'){printf("Î´»é\n");}
+		 						else{printf("ÒÑ»é\n");
+		 							//ÒÑ»é£º
+									//ÏÈ´òÓ¡Êä³ö  ÆŞ×Ó/ÕÉ·òµÄĞÅÏ¢£º
+		 							if((tp->nextNode[type]->sex) == 'M' || (tp->nextNode[type]->sex) == 'm'){
+										printf("\t%s ºÍÆŞ×Ó %s ÓıÓĞ %d ¸ö×ÓÅ®:\n",tp->nextNode[type]->name,tp->nextNode[type]->nextNode[0]->name,tp->nextNode[type]->num);}
+									else{
+										printf("\t%s ºÍÕÉ·ò %s ÓıÓĞ %d ¸ö×ÓÅ®:\n",tp->nextNode[type]->name,tp->nextNode[type]->nextNode[0]->name,tp->nextNode[type]->num);}
+
+									//ÏÈ´òÓ¡ËùÓĞº¢×Ó ĞÕÃû
+									for(int k=1;k<=(tp->nextNode[type]->num)&&k<20;k++){//ÒòÎªnum¸öº¢×Ó,ÓÖ¿Õ³öÒ»¸ö¸øÅäÅ¼,ËùÒÔ<=
+              							printf("\t\tµÚ %d ¸öº¢×Ó: %s \n ",k,tp->nextNode[type]->nextNode[k]->name);
+       								}//for
+       							}
+	      	}//if(type>0)
+	    }
+
+
+//´´½¨Ê÷   ÏÈĞò´´½¨
+treePoint createTree(){
+        treePoint tp;//´´½¨Ò»¸ö Ö¸ÏòÊ÷µÄ Ö¸Õë
+        tp=(treePoint)malloc(sizeof(treeNode));//ÉêÇëÒ»¿ÃÊ÷µÄÄÚ´æ
+
+        printf("\nÇëÊäÈëÃû×Ö:\n");
         scanf("%s",tp->name);
 			//printf("\n%s \n",tp->name);   debug
-        printf("\nè¯·è¾“å…¥ %s çš„æ€§åˆ«å­—æ¯ä»£å·, ç”· => m/M  |  å¥³ => f/F : \n",tp->name);
+        printf("\nÇëÊäÈë %s µÄĞÔ±ğ×ÖÄ¸´úºÅ, ÄĞ => m/M  |  Å® => f/F : \n",tp->name);
 		scanf("%s",&(tp->sex));
 			//printf("\n%s \n",tp->sex);   DEBUG
-        printf("è¯·è¾“å…¥ %s æ˜¯å¦å·²å©š: å·²å©šè¾“å…¥ y/Y, æœªå©šè¾“å…¥ n/N : \n",tp->name);
+        printf("ÇëÊäÈë %s ÊÇ·ñÒÑ»é: ÒÑ»éÊäÈë y/Y, Î´»éÊäÈë n/N : \n",tp->name);
         scanf("%s",&(tp->isMarried));
 
-        if(tp->isMarried == 'Y' ||tp->isMarried == 'y' ){//å¦‚æœå·²å©š
-            printf("\n\nè¯·è¾“å…¥ %s çš„å­©å­ä¸ªæ•°(æ•´æ•°):\n",tp->name);
+        if(tp->isMarried == 'Y' ||tp->isMarried == 'y' ){//Èç¹ûÒÑ»é
+            printf("\n\nÇëÊäÈë %s µÄº¢×Ó¸öÊı(ÕûÊı):\n",tp->name);
             scanf("%d",&(tp->num));
 
-            /******ç³»å¤– : è‡ªåŠ¨å–æ¶ˆè¯¥èŠ‚ç‚¹çš„ nextNode[]æŒ‡é’ˆæ•°ç»„ ,,,å³ä¸èµ‹å€¼ ä¸º null***/
-            /******é…å¶ä¿¡æ¯ è‡ªåŠ¨ èµ‹å€¼ ******/
+            /******ÏµÍâ : ×Ô¶¯È¡Ïû¸Ã½ÚµãµÄ nextNode[]Ö¸ÕëÊı×é ,,,¼´²»¸³Öµ Îª null***/
+            /******ÅäÅ¼ĞÅÏ¢ ×Ô¶¯ ¸³Öµ ******/
             tp->nextNode[0]=(treePoint)malloc(sizeof(treeNode));
-            (tp->nextNode[0]->num)=(tp->num);//è‡ªåŠ¨èµ‹å€¼ å­©å­ä¸ªæ•°
-            (tp->nextNode[0]->isMarried)='Y';//è‡ªåŠ¨èµ‹å€¼ å·²å©š
-            /***è‡ªåŠ¨èµ‹å€¼ ç”· å¥³  *****/
+            (tp->nextNode[0]->num)=(tp->num);//×Ô¶¯¸³Öµ º¢×Ó¸öÊı
+            (tp->nextNode[0]->isMarried)='Y';//×Ô¶¯¸³Öµ ÒÑ»é
+            /***×Ô¶¯¸³Öµ ÄĞ Å®  *****/
             if((tp->sex) == 'M' || (tp->sex) == 'm'){tp->nextNode[0]->sex = 'F';}
             else{tp->nextNode[0]->sex = 'M';}
-            //å–æ¶ˆ /*å°†å…¶åŒäº²èŠ‚ç‚¹æŒ‡å‘é…å¶:*/
+            //È¡Ïû /*½«ÆäË«Ç×½ÚµãÖ¸ÏòÅäÅ¼:*/
             //    (tp->nextNode[0]->parent) = tp;
 
-            /*** åœ¨æ­¤åªéœ€è¦è¾“å…¥ é…å¶çš„å§“åå³å¯ *****/
-            //å¦‚æœæ˜¯ç”·çš„ï¼Œè‡ªåŠ¨è°ƒæ•´æˆè¾“å…¥ å¦»å­ 
+            /*** ÔÚ´ËÖ»ĞèÒªÊäÈë ÅäÅ¼µÄĞÕÃû¼´¿É *****/
+            //Èç¹ûÊÇÄĞµÄ£¬×Ô¶¯µ÷Õû³ÉÊäÈë ÆŞ×Ó
             if((tp->sex) == 'M' || (tp->sex) == 'm'){
-				printf("è¯·è¾“å…¥ %s çš„å¦»å­çš„å§“å:\n",tp->name);
+				printf("ÇëÊäÈë %s µÄÆŞ×ÓµÄĞÕÃû:\n",tp->name);
 			}else{
-				printf("è¯·è¾“å…¥ %s çš„ä¸ˆå¤«çš„å§“å:\n",tp->name);
+				printf("ÇëÊäÈë %s µÄÕÉ·òµÄĞÕÃû:\n",tp->name);
 			}
-			
+
             scanf("%s",tp->nextNode[0]->name);  printf("\n\n");
 
-            /* å­©å­ä¿¡æ¯èµ‹å€¼ :ä»1å¼€å§‹å¾ªç¯,ç©ºä¸€ä¸ª. && åŒåˆ¤å®š ä¿è¯æ•°ç»„ä¸ä¼šè¶Šç•Œ*/
-            for(int i=1;i<=(tp->num)&&i<20;i++){//å› ä¸ºnumä¸ªå­©å­,åˆç©ºå‡ºä¸€ä¸ªç»™é…å¶,æ‰€ä»¥<=
-              printf("** æ­£åœ¨å½•å…¥ %s çš„ç¬¬ %d ä¸ªå­©å­ä¿¡æ¯(å…±%dä¸ª):\n",tp->name,i,tp->num);
+            /* º¢×ÓĞÅÏ¢¸³Öµ :´Ó1¿ªÊ¼Ñ­»·,¿ÕÒ»¸ö. && Ë«ÅĞ¶¨ ±£Ö¤Êı×é²»»áÔ½½ç*/
+            for(int i=1;i<=(tp->num)&&i<20;i++){//ÒòÎªnum¸öº¢×Ó,ÓÖ¿Õ³öÒ»¸ö¸øÅäÅ¼,ËùÒÔ<=
+              printf("** ÕıÔÚÂ¼Èë %s µÄµÚ %d ¸öº¢×ÓĞÅÏ¢(¹²%d¸ö):\n",tp->name,i,tp->num);
               tp->nextNode[i]= createTree();
             }
-        }//else{
-          //å¦‚æœæœªå©š,ç›´æ¥è¿”å›
-          //return tp;
-        //}
+        }else{tp->num=0;}
         return tp;
-    }
+}
 
-//éå†     
+//±éÀú
 void visit(treePoint tp){
 
-		 printf(">>å§“åï¼š%s ï¼Œæ€§åˆ«ï¼š",tp->name);
-		 	if((tp->sex) == 'M' || (tp->sex) == 'm'){printf("ç”·");}
-			else{printf("å¥³");}
-		 printf(" ï¼Œå©šå¦ï¼š");
-		 	if((tp->isMarried) == 'n' || (tp->isMarried) == 'N'){printf("æœªå©š\n");}
-		 	else{printf("å·²å©š\n");
-		 		//å·²å©šï¼š
-				//å…ˆæ‰“å°è¾“å‡º  å¦»å­/ä¸ˆå¤«çš„ä¿¡æ¯ï¼š 
+		 printf(">>ĞÕÃû£º%s £¬ĞÔ±ğ£º",tp->name);
+		 	if((tp->sex) == 'M' || (tp->sex) == 'm'){printf("ÄĞ");}
+			else{printf("Å®");}
+		 printf(" £¬»é·ñ£º");
+		 	if((tp->isMarried) == 'n' || (tp->isMarried) == 'N'){printf("Î´»é\n");}
+		 	else{printf("ÒÑ»é\n");
+		 		//ÒÑ»é£º
+				//ÏÈ´òÓ¡Êä³ö  ÆŞ×Ó/ÕÉ·òµÄĞÅÏ¢£º
 		 		if((tp->sex) == 'M' || (tp->sex) == 'm'){
-					printf("\t%s å’Œå¦»å­ %s è‚²æœ‰ %d ä¸ªå­å¥³:\n",tp->name,tp->nextNode[0]->name,tp->num);}
+					printf("\t%s ºÍÆŞ×Ó %s ÓıÓĞ %d ¸ö×ÓÅ®:\n",tp->name,tp->nextNode[0]->name,tp->num);}
 				else{
-					printf("\t%s å’Œä¸ˆå¤« %s è‚²æœ‰ %d ä¸ªå­å¥³:\n",tp->name,tp->nextNode[0]->name,tp->num);}
-				
-				
-				//å…ˆæ‰“å°æ‰€æœ‰å­©å­ å§“å 
-				for(int i=1;i<=(tp->num)&&i<20;i++){//å› ä¸ºnumä¸ªå­©å­,åˆç©ºå‡ºä¸€ä¸ªç»™é…å¶,æ‰€ä»¥<=
-              		printf("\t\tç¬¬ %d ä¸ªå­©å­: %s \n ",tp->nextNode[i]->name);
+					printf("\t%s ºÍÕÉ·ò %s ÓıÓĞ %d ¸ö×ÓÅ®:\n",tp->name,tp->nextNode[0]->name,tp->num);}
+
+
+				//ÏÈ´òÓ¡ËùÓĞº¢×Ó ĞÕÃû
+				for(int i=1;i<=(tp->num)&&i<20;i++){//ÒòÎªnum¸öº¢×Ó,ÓÖ¿Õ³öÒ»¸ö¸øÅäÅ¼,ËùÒÔ<=
+              		printf("\t\tµÚ %d ¸öº¢×Ó: %s \n ",i,tp->nextNode[i]->name);
             	}
-            	
+
             	printf("\n");
-            	//åœ¨åˆ†åˆ«éå†æ‰€æœ‰å­©å­å­æ ‘ï¼š
-				for(int i=1;i<=(tp->num)&&i<20;i++){//å› ä¸ºnumä¸ªå­©å­,åˆç©ºå‡ºä¸€ä¸ªç»™é…å¶,æ‰€ä»¥<=
-              		
+            	//ÔÚ·Ö±ğ±éÀúËùÓĞº¢×Ó×ÓÊ÷£º
+				for(int i=1;i<=(tp->num)&&i<20;i++){//ÒòÎªnum¸öº¢×Ó,ÓÖ¿Õ³öÒ»¸ö¸øÅäÅ¼,ËùÒÔ<=
              		visit(tp->nextNode[i]);
-            	} 
-				
-											 
+            	}
+
 			 }
-		 	
 
-} 
 
-//æŸ¥æ‰¾
+}
+
+//²éÕÒ //·µ»ØµÄÊÇ Æä ¸¸Ö¸Õë
 treePoint search(treePoint tp,char s[]){
-	if(strcmp(tp->name,s)==0){
-		 printf(">>å§“åï¼š%s ï¼Œæ€§åˆ«ï¼š",tp->name);
-		 	if((tp->sex) == 'M' || (tp->sex) == 'm'){printf("ç”·");}
-			else{printf("å¥³");}
-		 printf(" ï¼Œå©šå¦ï¼š");
-		 	if((tp->isMarried) == 'n' || (tp->isMarried) == 'N'){printf("æœªå©š\n");}
-		 	else{printf("å·²å©š\n");
-		 		//å·²å©šï¼š
-				//å…ˆæ‰“å°è¾“å‡º  å¦»å­/ä¸ˆå¤«çš„ä¿¡æ¯ï¼š 
-		 		if((tp->sex) == 'M' || (tp->sex) == 'm'){
-					printf("\t%s å’Œå¦»å­ %s è‚²æœ‰ %d ä¸ªå­å¥³:\n",tp->name,tp->nextNode[0]->name,tp->num);}
-				else{
-					printf("\t%s å’Œä¸ˆå¤« %s è‚²æœ‰ %d ä¸ªå­å¥³:\n",tp->name,tp->nextNode[0]->name,tp->num);}
-				
-				
-				//å…ˆæ‰“å°æ‰€æœ‰å­©å­ å§“å 
-				for(int i=1;i<=(tp->num)&&i<20;i++){//å› ä¸ºnumä¸ªå­©å­,åˆç©ºå‡ºä¸€ä¸ªç»™é…å¶,æ‰€ä»¥<=
-              		printf("\t\tç¬¬ %d ä¸ªå­©å­: %s \n ",tp->nextNode[i]->name);
-        
-			return tp;
-		}else{
-			
-				for(int i=1;i<=(tp->num)&&i<20;i++){//å› ä¸ºnumä¸ªå­©å­,åˆç©ºå‡ºä¸€ä¸ªç»™é…å¶,æ‰€ä»¥<=
-              		
-              		search(tp->nextNode[i],s);
-             		
-            	} 
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
+	if(strcmp(tp->name,s)==0){//Ö»¶Ô ¸ù½ÚµãÓĞĞ§
+			type=-1;//¸ù½áµã
+			printPerson(tp);//¸ù¾İtype
+
+			return tp;//ÕÒµ½ºó·µ»ØÕâ¸öÖ¸Õë
+
+	}else{// strcmp(tp->name,s)!=0 Èç¹ûÃû×Ö²»ÏàµÈ,¼ÌĞøµİ¹é²éÕÒ
+        if(strcmp(tp->nextNode[0]->name,s)==0){//Èç¹ûÊÇÅäÅ¼µÄÃû×Ö
+                    //
+            type=0;//ÅäÅ¼
+			printPerson(tp);
+
+            return tp;//·µ»ØÆä ¸¸½áµã Ö¸Õë   ÅäºÏtype Ê¹ÓÃ
+        }else{		
+        			type=-2;//ÓÃÇ°¸´Î» 
+                    for(int i=1;i<=(tp->num)&&i<20;i++){//ÒòÎªnum¸öº¢×Ó,ÓÖ¿Õ³öÒ»¸ö¸øÅäÅ¼,ËùÒÔ<=
+                        if(strcmp(tp->nextNode[i]->name,s)==0){
+                        	type=i;//µÚ¼¸¸öº¢×Ó ¾ÍÊÇ¼¸
+
+                        	printPerson(tp);
+
+                           	return tp;//·µ»ØÆä ¸¸½áµã Ö¸Õë   ÅäºÏtype Ê¹ÓÃ
+                            break;//ÕÒµ½,ÍË³öÑ­»·¡£
+
+                        }else{
+                            search(tp->nextNode[i],s);
+                            return NULL; 
+                            }//ifelse
+                    }//for
+                }//if
 		}
-        
-	}
-	
-	
-	
-	
-			 printf(">>å§“åï¼š%s ï¼Œæ€§åˆ«ï¼š",tp->name);
-		 	if((tp->sex) == 'M' || (tp->sex) == 'm'){printf("ç”·");}
-			else{printf("å¥³");}
-		 printf(" ï¼Œå©šå¦ï¼š");
-		 	if((tp->isMarried) == 'n' || (tp->isMarried) == 'N'){printf("æœªå©š\n");}
-		 	else{printf("å·²å©š\n");
-		 		//å·²å©šï¼š
-				//å…ˆæ‰“å°è¾“å‡º  å¦»å­/ä¸ˆå¤«çš„ä¿¡æ¯ï¼š 
-		 		if((tp->sex) == 'M' || (tp->sex) == 'm'){
-					printf("\t%s å’Œå¦»å­ %s è‚²æœ‰ %d ä¸ªå­å¥³:\n",tp->name,tp->nextNode[0]->name,tp->num);}
-				else{
-					printf("\t%s å’Œä¸ˆå¤« %s è‚²æœ‰ %d ä¸ªå­å¥³:\n",tp->name,tp->nextNode[0]->name,tp->num);}
-				
-				
-				//å…ˆæ‰“å°æ‰€æœ‰å­©å­ å§“å 
-				for(int i=1;i<=(tp->num)&&i<20;i++){//å› ä¸ºnumä¸ªå­©å­,åˆç©ºå‡ºä¸€ä¸ªç»™é…å¶,æ‰€ä»¥<=
-              		printf("\t\tç¬¬ %d ä¸ªå­©å­: %s \n ",tp->nextNode[i]->name);
-            	}
-            	
-            	printf("\n");
-            	//åœ¨åˆ†åˆ«éå†æ‰€æœ‰å­©å­å­æ ‘ï¼š
-				for(int i=1;i<=(tp->num)&&i<20;i++){//å› ä¸ºnumä¸ªå­©å­,åˆç©ºå‡ºä¸€ä¸ªç»™é…å¶,æ‰€ä»¥<=
-              		
-             		visit(tp->nextNode[i]);
-            	} 
-				
-											 
-			 }
-		 	
-	
 	return NULL;
 }
 
-//æ·»åŠ     ä¾ç±»å‹  1 å«å¨¶ï¼ˆï¼‰ï¼Œ2 ç”Ÿè‚²ï¼ˆï¼‰
-void add(){
+//Ìí¼Ó    ÒÀÀàĞÍ  1 ¼ŞÈ¢£¨£©£¬2 ÉúÓı£¨£©
+void add(treePoint mt){
+	int t;
+	char s[20];
+	treePoint tpp;
+	tpp=(treePoint)malloc(sizeof(treeNode));//ÉêÇëÒ»¿ÃÊ÷µÄÄÚ´æ
 	
-	
+	printf("-----Ñ¡ÔñÌí¼ÓÀàĞÍ  1 : ¼ŞÈ¢£¨Ìí¼ÓÅäÅ¼£©£¬2 : ÉúÓı£¨Ìí¼Ó×ÓÅ®£©\n");
+	//printf("\nÇëÊäÈëÀàĞÍ£º1 -> ¼ŞÈ¢¡¢ 2 -> ÉúÓı¡£\n");
+	scanf("%d",&t);
+
+	//¼ŞÈ¢
+	if(t==1){//Ò»¶¨ÊÇ ¼ÒÆ×ÀïµÄ  Ä³¸öº¢×Ó  (»òÕß¸ù)£¬²Å»á¼ŞÈ¢ (²»¿ÉÄÜÊÇÄ³ÈËµÄÅäÅ¼)
+        printf("---------- ÇëÊäÈë ¼ÒÆ×ÖĞÒª½á»éµÄÈËµÄĞÕÃû£º   ----------\n\n");
+        scanf("%s",s);//printf("\n debug 001 \n");//---------------------------------------------------------------------
+
+		type=-2;//typeÏÈ¸´Ô­
+		tpp=search(mt,s);//ÀàĞÍ´æµ½ÁË int type ÖĞÁË:  -1 root    ÕıÊı n ÎªµÚ n ¸öº¢×Ó
+		//printf("\n debug 002 \n");//---------------------------------------------------------------------
+			//Èç¹ûÊÇ¸ù
+			if(type==-1){//printf("\n debug 003 \n");//---------------------------------------------------------------------
+                //ÏÈ°Ñ¸ÃÓÃ»§isMarried ÖÃÎª Y  ÒÑ»é.
+                tpp->isMarried = 'Y';
+                tpp->num = 0;//printf("\n debug 004 \n");//---------------------------------------------------------------------
+				//Èç¹ûÊÇÄĞµÄ£¬ÒªÈ¢Ë­
+				if(tpp->sex=='M'||tpp->sex=='m'){
+
+					//printf("\n debug 005 \n");//---------------------------------------------------------------------
+					printf("---------- ÇëÊäÈë %s ÆŞ×ÓµÄ×ÊÁÏ £º   ----------\n\n",tpp->name);
+					tpp->nextNode[0]=(treePoint)malloc(sizeof(treeNode));//ÉêÇëÒ»¿ÃÊ÷µÄÄÚ´æ
+
+                    printf("\nÇëÊäÈëÃû×Ö:\n");
+                    scanf("%s",tpp->nextNode[0]->name);
+
+                    (tpp->nextNode[0]->sex) = 'F';
+                    (tpp->nextNode[0]->num) = (tpp->num);//×Ô¶¯¸³Öµ º¢×Ó¸öÊı
+                    (tpp->nextNode[0]->isMarried) = 'Y';//×Ô¶¯¸³Öµ ÒÑ»é
+                    printf("\nÌí¼ÓÍê³É! ^_^  \n");
+
+				}else{
+					printf("---------- ÇëÊäÈë %s ÕÉ·òµÄ×ÊÁÏ £º   ----------\n\n",tpp->name);
+					tpp->nextNode[0]=(treePoint)malloc(sizeof(treeNode));//ÉêÇëÒ»¿ÃÊ÷µÄÄÚ´æ
+					
+					//printf("\n debug  006 \n");//---------------------------------------------------------------------
+                    printf("\nÇëÊäÈëÃû×Ö:\n");
+                    scanf("%s",tpp->nextNode[0]->name);
+
+                    (tpp->nextNode[0]->sex) = 'M';
+                    (tpp->nextNode[0]->num) = (tpp->num);//×Ô¶¯¸³Öµ º¢×Ó¸öÊı
+                    (tpp->nextNode[0]->isMarried) = 'Y';//×Ô¶¯¸³Öµ ÒÑ»é
+
+				}
+                }
+			//Èç¹û²»ÊÇ¸ù
+			if(type>0){
+                //ÏÈ°Ñ¸ÃÓÃ»§isMarried ÖÃÎª Y  ÒÑ»é.
+                tpp->nextNode[type]->isMarried = 'Y';
+                tpp->nextNode[type]->num = 0;//printf("\n debug 007 \n");//---------------------------------------------------------------------
+				//Èç¹ûÊÇÄĞµÄ£¬ÒªÈ¢Ë­
+				if(tpp->nextNode[type]->sex=='M'||tpp->nextNode[type]->sex=='m'){
+					
+					//printf("\n debug  \n");//---------------------------------------------------------------------
+                    printf("---------- ÇëÊäÈë %s ÆŞ×ÓµÄ×ÊÁÏ £º   ----------\n\n",tpp->nextNode[type]->name);
+					tpp->nextNode[type]->nextNode[0]=(treePoint)malloc(sizeof(treeNode));//ÉêÇëÒ»¿ÃÊ÷µÄÄÚ´æ
+
+                    printf("\nÇëÊäÈëÃû×Ö:\n");
+                    scanf("%s",tpp->nextNode[type]->nextNode[0]->name);
+
+                    (tpp->nextNode[type]->nextNode[0]->sex) = 'F';
+                    (tpp->nextNode[type]->nextNode[0]->num) = (tpp->nextNode[type]->num);//×Ô¶¯¸³Öµ º¢×Ó¸öÊı
+                    (tpp->nextNode[type]->nextNode[0]->isMarried) = 'Y';//×Ô¶¯¸³Öµ ÒÑ»é
+                    printf("\nÌí¼ÓÍê³É! ^_^  \n");
+
+				}else{//printf("\n debug 009 \n");//---------------------------------------------------------------------
+					printf("---------- ÇëÊäÈë %s ÕÉ·òµÄ×ÊÁÏ £º   ----------\n\n",tpp->nextNode[type]->name);
+
+					tpp->nextNode[type]->nextNode[0]=(treePoint)malloc(sizeof(treeNode));//ÉêÇëÒ»¿ÃÊ÷µÄÄÚ´æ
+
+                    printf("\nÇëÊäÈëÃû×Ö:\n");
+                    scanf("%s",tpp->nextNode[type]->nextNode[0]->name);
+
+                    (tpp->nextNode[type]->nextNode[0]->sex) = 'F';
+                    (tpp->nextNode[type]->nextNode[0]->num) = (tpp->nextNode[type]->num);//×Ô¶¯¸³Öµ º¢×Ó¸öÊı
+                    (tpp->nextNode[type]->nextNode[0]->isMarried) = 'Y';//×Ô¶¯¸³Öµ ÒÑ»é
+                    printf("\nÌí¼ÓÍê³É! ^_^  \n");
+
+				}
+			}
+	}
+
+	//ÉúÓı
+	if(t==2){
+        printf("\n----------  ÇëÊäÈëË­¼ÒÌí¶¡ (±¾Ïµ)----------\n\n");
+        scanf("%s",s);
+
+		type=-2;//typeÏÈ¸´Ô­
+		tpp=search(mt,s);//ÀàĞÍ´æµ½ÁË int type ÖĞÁË:  -1 root    ÕıÊı n ÎªµÚ n ¸öº¢×Ó
+
+        //Èç¹ûÊÇ¸ù
+        if(type==-1){
+            tpp->nextNode[tpp->num+1]=(treePoint)malloc(sizeof(treeNode));//ÉêÇëÒ»¿ÃÊ÷µÄÄÚ´æ
+
+            printf("\n==>ÕıÔÚÂ¼Èë%s¼Ò ĞÂÉú¶ùĞÅÏ¢:\n",tpp->nextNode[(tpp->num)+1]->name);
+            printf("\nÇëÊäÈëĞÂÉú¶ù Ãû×Ö:\n");
+            scanf("%s",tpp->nextNode[(tpp->num)+1]->name);
+			//printf("\n%s \n",tp->name);   debug
+            printf("\nÇëÊäÈë %s µÄĞÔ±ğ×ÖÄ¸´úºÅ, ÄĞ => m/M  |  Å® => f/F : \n",tpp->nextNode[(tpp->num)+1]->name);
+            scanf("%s",&(tpp->nextNode[(tpp->num)+1]->sex));
+            //×Ô¶¯¸³Öµ
+            tpp->nextNode[(tpp->num)+1]->num=0;
+            tpp->nextNode[(tpp->num)+1]->isMarried='N';
+            
+            //º¢×ÓÊı +1
+			tpp->num++; 
+        }
+        if(type>0){
+            tpp->nextNode[type]->nextNode[tpp->num+1]=(treePoint)malloc(sizeof(treeNode));//ÉêÇëÒ»¿ÃÊ÷µÄÄÚ´æ
+
+            printf("\n==>ÕıÔÚÂ¼Èë%s¼Ò ĞÂÉú¶ùĞÅÏ¢:\n",tpp->nextNode[type]->name);
+            printf("\nÇëÊäÈëĞÂÉú¶ù Ãû×Ö:\n");
+            scanf("%s",tpp->nextNode[type]->nextNode[(tpp->nextNode[type]->num)+1]->name);
+			//printf("\n%s \n",tp->name);   debug
+            printf("\nÇëÊäÈë %s µÄĞÔ±ğ×ÖÄ¸´úºÅ, ÄĞ => m/M  |  Å® => f/F : \n",tpp->nextNode[type]->name);
+            scanf("%s",&(tpp->nextNode[type]->nextNode[(tpp->nextNode[type]->num)+1]->sex));
+            //×Ô¶¯¸³Öµ
+            tpp->nextNode[type]->nextNode[(tpp->nextNode[type]->num)+1]->num=0;
+            tpp->nextNode[type]->nextNode[(tpp->nextNode[type]->num)+1]->isMarried='N';
+            
+            //º¢×ÓÊı +1
+			tpp->nextNode[type]->num++; 
+        }
+	}
+
 }
 
+//ĞŞ¸Ä    xxx ĞŞ¸Ä¸öÈËĞÅÏ¢
+void edit(treePoint mt){
+        char s[20];
+        treePoint tpp;
 
-//ä¿®æ”¹    xxx ä¿®æ”¹ä¸ªäººä¿¡æ¯ 
-void edit(treePoint tp,char *s){
-	//search();
+        printf("---------- ÇëÊäÈë ÒªĞŞ¸ÄµÄÈËµÄĞÕÃû£º   ----------\n\n");
+        scanf("%s",s);
+
+		tpp=search(mt,s);//ÀàĞÍ´æµ½ÁË int type ÖĞÁË:  -1 root    ÕıÊı n ÎªµÚ n ¸öº¢×Ó
+			//Èç¹ûÊÇ¸ù
+			if(type==-1){
+                printf("ÇëÊäÈëĞÂÃû×Ö£º");
+                scanf("%s",tpp->name);
+
+                printf("\nĞŞ¸ÄÍê³É! ^_^  \n");
+                }
+			//Èç¹û²»ÊÇ¸ù
+			if(type>0){
+                printf("ÇëÊäÈëĞÂÃû×Ö£º");
+                scanf("%s",tpp->nextNode[type]->name);
+
+                printf("\nĞŞ¸ÄÍê³É! ^_^  \n");
+				}
 }
 
