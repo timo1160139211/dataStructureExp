@@ -38,6 +38,7 @@ void edit(treePoint mt);//修改姓名
 
 //全局变量
 int type=-2;//用来区分查找的是不是  根结点-1  、 嫁娶的系外 配偶  0  、第几个孩子 就是几
+int count=0;
 
 int main() {
     char c;
@@ -84,12 +85,7 @@ int main() {
 				        printf("----------正在翻阅家谱ing...  ----------\n\n\n");
 				        st=search(mainTree,s);
 
-				        if(st==NULL){
-				        	printf("查询不到 %s 的信息  :-(  \n",s);
-						}else{
-							printf("查询成功！  :-)  \n");
-							//打印该用户信息
-						}
+
 
 				        backMenu();
 			            break;
@@ -317,10 +313,11 @@ void visit(treePoint tp){
 
 //查找 //返回的是 其 父指针
 treePoint search(treePoint tp,char s[]){
-	if(strcmp(tp->name,s)==0){//只对 根节点有效
+	
+	if(strcmp(tp->name,s)==0&&count==0){//只对 根节点有效
 			type=-1;//根结点
 			printPerson(tp);//根据type
-
+			count++;
 			return tp;//找到后返回这个指针
 
 	}else{// strcmp(tp->name,s)!=0 如果名字不相等,继续递归查找
@@ -353,7 +350,7 @@ treePoint search(treePoint tp,char s[]){
 
 //添加    依类型  1 嫁娶（），2 生育（）
 void add(treePoint mt){
-	int t;
+	int t=0;
 	char s[20];
 	treePoint tpp;
 	tpp=(treePoint)malloc(sizeof(treeNode));//申请一棵树的内存
@@ -365,20 +362,20 @@ void add(treePoint mt){
 	//嫁娶
 	if(t==1){//一定是 家谱里的  某个孩子  (或者根)，才会嫁娶 (不可能是某人的配偶)
         printf("---------- 请输入 家谱中要结婚的人的姓名：   ----------\n\n");
-        scanf("%s",s);//printf("\n debug 001 \n");//---------------------------------------------------------------------
+        scanf("%s",s);
 
 		type=-2;//type先复原
 		tpp=search(mt,s);//类型存到了 int type 中了:  -1 root    正数 n 为第 n 个孩子
-		//printf("\n debug 002 \n");//---------------------------------------------------------------------
+		
 			//如果是根
-			if(type==-1){//printf("\n debug 003 \n");//---------------------------------------------------------------------
+			if(type==-1){
                 //先把该用户isMarried 置为 Y  已婚.
                 tpp->isMarried = 'Y';
-                tpp->num = 0;//printf("\n debug 004 \n");//---------------------------------------------------------------------
+                tpp->num = 0;
 				//如果是男的，要娶谁
 				if(tpp->sex=='M'||tpp->sex=='m'){
 
-					//printf("\n debug 005 \n");//---------------------------------------------------------------------
+
 					printf("---------- 请输入 %s 妻子的资料 ：   ----------\n\n",tpp->name);
 					tpp->nextNode[0]=(treePoint)malloc(sizeof(treeNode));//申请一棵树的内存
 
@@ -394,7 +391,7 @@ void add(treePoint mt){
 					printf("---------- 请输入 %s 丈夫的资料 ：   ----------\n\n",tpp->name);
 					tpp->nextNode[0]=(treePoint)malloc(sizeof(treeNode));//申请一棵树的内存
 					
-					//printf("\n debug  006 \n");//---------------------------------------------------------------------
+					
                     printf("\n请输入名字:\n");
                     scanf("%s",tpp->nextNode[0]->name);
 
@@ -408,11 +405,12 @@ void add(treePoint mt){
 			if(type>0){
                 //先把该用户isMarried 置为 Y  已婚.
                 tpp->nextNode[type]->isMarried = 'Y';
-                tpp->nextNode[type]->num = 0;//printf("\n debug 007 \n");//---------------------------------------------------------------------
+                tpp->nextNode[type]->num = 0;
 				//如果是男的，要娶谁
 				if(tpp->nextNode[type]->sex=='M'||tpp->nextNode[type]->sex=='m'){
+				
+				
 					
-					//printf("\n debug  \n");//---------------------------------------------------------------------
                     printf("---------- 请输入 %s 妻子的资料 ：   ----------\n\n",tpp->nextNode[type]->name);
 					tpp->nextNode[type]->nextNode[0]=(treePoint)malloc(sizeof(treeNode));//申请一棵树的内存
 
@@ -424,7 +422,7 @@ void add(treePoint mt){
                     (tpp->nextNode[type]->nextNode[0]->isMarried) = 'Y';//自动赋值 已婚
                     printf("\n添加完成! ^_^  \n");
 
-				}else{//printf("\n debug 009 \n");//---------------------------------------------------------------------
+				}else{
 					printf("---------- 请输入 %s 丈夫的资料 ：   ----------\n\n",tpp->nextNode[type]->name);
 
 					tpp->nextNode[type]->nextNode[0]=(treePoint)malloc(sizeof(treeNode));//申请一棵树的内存
@@ -465,15 +463,17 @@ void add(treePoint mt){
             
             //孩子数 +1
 			tpp->num++; 
+			printf("\n新生儿 %s 添加完成! ^_^  \n",tpp->nextNode[(tpp->num)]->name);
         }
         if(type>0){
-            tpp->nextNode[type]->nextNode[tpp->num+1]=(treePoint)malloc(sizeof(treeNode));//申请一棵树的内存
+            tpp->nextNode[type]->nextNode[(tpp->nextNode[type]->num)+1]=(treePoint)malloc(sizeof(treeNode));//申请一棵树的内存
 
             printf("\n==>正在录入%s家 新生儿信息:\n",tpp->nextNode[type]->name);
             printf("\n请输入新生儿 名字:\n");
             scanf("%s",tpp->nextNode[type]->nextNode[(tpp->nextNode[type]->num)+1]->name);
-			//printf("\n%s \n",tp->name);   debug
-            printf("\n请输入 %s 的性别字母代号, 男 => m/M  |  女 => f/F : \n",tpp->nextNode[type]->name);
+            
+		
+            printf("\n请输入 %s 的性别字母代号, 男 => m/M  |  女 => f/F : \n",tpp->nextNode[type]->nextNode[(tpp->nextNode[type]->num)+1]->name);
             scanf("%s",&(tpp->nextNode[type]->nextNode[(tpp->nextNode[type]->num)+1]->sex));
             //自动赋值
             tpp->nextNode[type]->nextNode[(tpp->nextNode[type]->num)+1]->num=0;
@@ -481,6 +481,8 @@ void add(treePoint mt){
             
             //孩子数 +1
 			tpp->nextNode[type]->num++; 
+			
+			printf("\n新生儿 %s 添加完成! ^_^  \n",tpp->nextNode[type]->nextNode[(tpp->nextNode[type]->num)]->name);
         }
 	}
 
